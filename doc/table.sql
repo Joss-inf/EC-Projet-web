@@ -132,3 +132,15 @@ CREATE TABLE emission (
     FOREIGN KEY (id_polluant) REFERENCES polluant(id_polluant),
     FOREIGN KEY (id_unite) REFERENCES unite(id_unite)
 );
+
+CREATE TABLE prelevement (
+    id_emission INT AUTO_INCREMENT PRIMARY KEY,
+    id_nom_institut INT,
+    id_annee INT,
+    prelevementEauCave INT
+    prelevementEauSurface INT
+    prelevementEauDistrib INT
+    prelevementEauMer INT
+    FOREIGN KEY (id_annee) REFERENCES annee(id_annee),
+    FOREIGN KEY (id_nom_institut) REFERENCES nom_institut(id_nom_institut)
+);
