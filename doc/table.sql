@@ -1,146 +1,231 @@
--- Création de la base de données   ::::::::  incomplet pour le moment
+-- Create the database
 CREATE DATABASE statpol;
 USE statpol;
 
--- Table des unités
-CREATE TABLE unite (
-    id_unite INT AUTO_INCREMENT PRIMARY KEY,
-    nom_unite VARCHAR(50) NOT NULL
-);
-
--- Table des années
-CREATE TABLE annee (
-    id_annee INT AUTO_INCREMENT PRIMARY KEY,
-    annee YEAR NOT NULL
-);
-
--- Table des environnements
-CREATE TABLE environnement (
-    id_environnement INT AUTO_INCREMENT PRIMARY KEY,
-    nom_environnement VARCHAR(50) NOT NULL
-);
-
--- Table des polluants
-CREATE TABLE polluant (
-    id_polluant INT AUTO_INCREMENT PRIMARY KEY,
-    nom_polluant VARCHAR(100) NOT NULL
-);
-
--- Table des noms d'instituts
-CREATE TABLE nom_institut (
-    id_nom_institut INT AUTO_INCREMENT PRIMARY KEY,
-    nom_institut VARCHAR(255) NOT NULL
-);
-
--- Table des codes postaux
-CREATE TABLE code_postal (
-    id_code_postal INT AUTO_INCREMENT PRIMARY KEY,
-    code_postal VARCHAR(10) NOT NULL
-);
-
--- Table des communes
-CREATE TABLE commune (
-    id_commune INT AUTO_INCREMENT PRIMARY KEY,
-    nom_commune VARCHAR(100) NOT NULL
-);
-
--- Table des départements
-CREATE TABLE departement (
-    id_departement INT AUTO_INCREMENT PRIMARY KEY,
-    nom_departement VARCHAR(100) NOT NULL
-);
-
--- Table des régions
-CREATE TABLE region (
-    id_region INT AUTO_INCREMENT PRIMARY KEY,
-    nom_region VARCHAR(100) NOT NULL
-);
-
--- Table des codes EPSG
-CREATE TABLE code_epsg (
-    id_code_epsg INT AUTO_INCREMENT PRIMARY KEY,
-    code_epsg VARCHAR(50) NOT NULL
-);
-
--- Table des codes APE
-CREATE TABLE code_ape (
-    id_code_ape INT AUTO_INCREMENT PRIMARY KEY,
-    code_ape VARCHAR(10) NOT NULL
-);
-
--- Table des libellés APE
-CREATE TABLE libelle_ape (
-    id_libelle_ape INT AUTO_INCREMENT PRIMARY KEY,
-    libelle_ape VARCHAR(255) NOT NULL
-);
-
--- Table des codes EPTR
-CREATE TABLE code_eptr (
-    id_code_eptr INT AUTO_INCREMENT PRIMARY KEY,
-    code_eptr VARCHAR(50) NOT NULL
-);
-
--- Table des libellés EPTR
-CREATE TABLE libelle_eptr (
-    id_libelle_eptr INT AUTO_INCREMENT PRIMARY KEY,
-    libelle_eptr VARCHAR(255) NOT NULL
-);
-
--- Table des instituts
-CREATE TABLE institut (
+CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    id_csv INT,
-    id_nom_institut INT,
+    username VARCHAR(100) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL, 
+    user_state INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    last_login TIMESTAMP NULL
+);
+
+CREATE TABLE message (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    channel_id INT,
+    content TEXT NOT NULL, 
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES user(id)  
+);
+
+CREATE TABLE user_log (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    action VARCHAR(255) NOT NULL, 
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+    FOREIGN KEY (user_id) REFERENCES user(id) 
+);
+
+-- Units table
+CREATE TABLE unit (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
+-- Years table
+CREATE TABLE year (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    year YEAR NOT NULL
+);
+
+-- Environments table
+CREATE TABLE environment (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
+-- Pollutants table
+CREATE TABLE pollutant (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+-- Institutes names table
+CREATE TABLE institute_name (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+-- Postal codes table
+CREATE TABLE postal_code (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    postal_code VARCHAR(10) NOT NULL
+);
+
+-- Communities table
+CREATE TABLE community (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+-- Departments table
+CREATE TABLE department (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+-- Regions table
+CREATE TABLE region (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+-- Country table
+CREATE TABLE country (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+-- EPSG codes table
+CREATE TABLE code_epsg (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) NOT NULL
+);
+
+-- APE codes table
+CREATE TABLE code_ape (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(10) NOT NULL
+);
+
+-- APE labels table
+CREATE TABLE label_ape (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    label VARCHAR(255) NOT NULL
+);
+
+-- EPTR codes table
+CREATE TABLE code_eptr (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) NOT NULL
+);
+
+-- EPTR labels table
+CREATE TABLE label_eptr (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    label VARCHAR(255) NOT NULL
+);
+
+-- Institutes table
+CREATE TABLE institute (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    institute_name_id INT,
     siret VARCHAR(14),
-    adresse VARCHAR(255),
-    id_code_postal INT,
-    id_commune INT,
-    id_departement INT,
-    id_region INT,
+    address VARCHAR(255),
+    postal_code_id INT,
+    community_id INT,
+    department_id INT,
+    region_id INT,
     coord_x DECIMAL(10, 6),
     coord_y DECIMAL(10, 6),
-    id_code_epsg INT,
-    id_code_ape INT,
-    id_libelle_ape INT,
-    id_code_eptr INT,
-    id_libelle_eptr INT,
-    FOREIGN KEY (id_nom_institut) REFERENCES nom_institut(id_nom_institut),
-    FOREIGN KEY (id_code_postal) REFERENCES code_postal(id_code_postal),
-    FOREIGN KEY (id_commune) REFERENCES commune(id_commune),
-    FOREIGN KEY (id_departement) REFERENCES departement(id_departement),
-    FOREIGN KEY (id_region) REFERENCES region(id_region),
-    FOREIGN KEY (id_code_epsg) REFERENCES code_epsg(id_code_epsg),
-    FOREIGN KEY (id_code_ape) REFERENCES code_ape(id_code_ape),
-    FOREIGN KEY (id_libelle_ape) REFERENCES libelle_ape(id_libelle_ape),
-    FOREIGN KEY (id_code_eptr) REFERENCES code_eptr(id_code_eptr),
-    FOREIGN KEY (id_libelle_eptr) REFERENCES libelle_eptr(id_libelle_eptr)
+    code_epsg_id INT,
+    code_ape_id INT,
+    label_ape_id INT,
+    code_eptr_id INT,
+    label_eptr_id INT,
+    FOREIGN KEY (institute_name_id) REFERENCES institute_name(id),
+    FOREIGN KEY (postal_code_id) REFERENCES postal_code(id),
+    FOREIGN KEY (community_id) REFERENCES community(id),
+    FOREIGN KEY (department_id) REFERENCES department(id),
+    FOREIGN KEY (region_id) REFERENCES region(id),
+    FOREIGN KEY (code_epsg_id) REFERENCES code_epsg(id),
+    FOREIGN KEY (code_ape_id) REFERENCES code_ape(id),
+    FOREIGN KEY (label_ape_id) REFERENCES label_ape(id),
+    FOREIGN KEY (code_eptr_id) REFERENCES code_eptr(id),
+    FOREIGN KEY (label_eptr_id) REFERENCES label_eptr(id)
 );
 
--- Table des émissions
+-- Emissions table
 CREATE TABLE emission (
-    id_emission INT AUTO_INCREMENT PRIMARY KEY,
-    id_csv INT,
-    id_institut INT,
-    id_annee INT,
-    id_environnement INT,
-    id_polluant INT,
-    id_unite INT,
-    quantite DECIMAL(15, 3),
-    FOREIGN KEY (id_institut) REFERENCES institut(id_institut),
-    FOREIGN KEY (id_annee) REFERENCES annee(id_annee),
-    FOREIGN KEY (id_environnement) REFERENCES environnement(id_environnement),
-    FOREIGN KEY (id_polluant) REFERENCES polluant(id_polluant),
-    FOREIGN KEY (id_unite) REFERENCES unite(id_unite)
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    institute_id INT,
+    year_id INT,
+    environment_id INT,
+    pollutant_id INT,
+    unit_id INT,
+    quantity DECIMAL(15, 3),
+    FOREIGN KEY (institute_id) REFERENCES institute(id),
+    FOREIGN KEY (year_id) REFERENCES year(id),
+    FOREIGN KEY (environment_id) REFERENCES environment(id),
+    FOREIGN KEY (pollutant_id) REFERENCES pollutant(id),
+    FOREIGN KEY (unit_id) REFERENCES unit(id)
 );
 
+-- Prelevement table
 CREATE TABLE prelevement (
-    id_emission INT AUTO_INCREMENT PRIMARY KEY,
-    id_nom_institut INT,
-    id_annee INT,
-    prelevementEauCave INT
-    prelevementEauSurface INT
-    prelevementEauDistrib INT
-    prelevementEauMer INT
-    FOREIGN KEY (id_annee) REFERENCES annee(id_annee),
-    FOREIGN KEY (id_nom_institut) REFERENCES nom_institut(id_nom_institut)
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    institute_name_id INT,
+    year_id INT,
+    water_cave INT,
+    water_surface INT,
+    water_distribution INT,
+    water_sea INT,
+    FOREIGN KEY (year_id) REFERENCES year(id),
+    FOREIGN KEY (institute_name_id) REFERENCES institute_name(id)
+);
+
+-- Waste table
+CREATE TABLE waste (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(40) NOT NULL
+);
+
+-- Waste codes table
+CREATE TABLE waste_code (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code INT NOT NULL
+);
+
+-- Waste labels table
+CREATE TABLE waste_label (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    label TEXT NOT NULL
+);
+
+-- Waste disposal/valorization operations table
+CREATE TABLE disposal_valorization_operation (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name_code VARCHAR(4) NOT NULL,
+    name_label TEXT NOT NULL
+);
+
+-- Waste production table
+CREATE TABLE waste_production (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    institute_name_id INT,
+    waste_id INT,
+    year_id INT, 
+    disposal_valorization_operation_id INT,
+    department_id INT,
+    country_id INT,
+    waste_code_id INT,
+    waste_label_id INT,
+    prod_quantity DECIMAL(15, 3),
+    quantity_in DECIMAL(15, 3),
+    quantity_treated DECIMAL(15, 3),
+    unit_id INT,
+    FOREIGN KEY (institute_name_id) REFERENCES institute_name(id),
+    FOREIGN KEY (waste_id) REFERENCES waste(id),
+    FOREIGN KEY (year_id) REFERENCES year(id),
+    FOREIGN KEY (disposal_valorization_operation_id) REFERENCES disposal_valorization_operation(id),
+    FOREIGN KEY (department_id) REFERENCES department(id),
+    FOREIGN KEY (country_id) REFERENCES country(id),
+    FOREIGN KEY (waste_code_id) REFERENCES waste_code(id),
+    FOREIGN KEY (waste_label_id) REFERENCES waste_label(id),
+    FOREIGN KEY (unit_id) REFERENCES unit(id)
 );
