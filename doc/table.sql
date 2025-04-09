@@ -20,7 +20,7 @@ CREATE TABLE message (
     content TEXT NOT NULL, 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES user(id)  
+    FOREIGN KEY (user_id) REFERENCES users(id)  
 );
 
 CREATE TABLE user_log (
@@ -28,7 +28,7 @@ CREATE TABLE user_log (
     user_id INT,
     action VARCHAR(255) NOT NULL, 
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
-    FOREIGN KEY (user_id) REFERENCES user(id) 
+    FOREIGN KEY (user_id) REFERENCES users(id) 
 );
 
 -- Units table
