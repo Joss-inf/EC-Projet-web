@@ -1,7 +1,6 @@
 <div class="filter-container">
     <h1>Filtrer les émissions</h1>
 
-    <!-- Barre de recherche -->
     <div class="search-bar">
         <input type="text" id="searchInput" placeholder="Rechercher..." class="filter-select">
     </div>
@@ -28,8 +27,6 @@
         </div>
     </div>
 
-
-    <!-- Tri des résultats -->
     <div class="filter-row">
         <button id="sortAscBtn" class="filter-btn">Trier Croissant</button>
         <button id="sortDescBtn" class="filter-btn">Trier Décroissant</button>
