@@ -1,72 +1,85 @@
 <?php
-ini_set('display_errors', 1);  // Active l'affichage des erreurs
-error_reporting(E_ALL);        // Affiche toutes les erreurs
+session_start();
+function showError($code, $message): never
+{
+    http_response_code(response_code: $code);
+    $file = ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . "error.php";
+    if (file_exists(filename: $file)) {
+        // Variables utilisées dans la page error.php
+        $code = htmlspecialchars(string: $code);
+        $message = htmlspecialchars(string: $message);
+        include $file;
+    } else {
+        echo "<h1>Erreur $code</h1><p>$message</p>";
+    }
+    exit;
+}
 
-session_start(); // Si tu utilises des rôles ou des sessions utilisateur
-
-// Rôle actuel de l'utilisateur (par défaut : invité)
-$currentRole = $_SESSION['role'] ?? 'guest';
-
-// Liste blanche des routes valides
 $routes = [
     "admin_dashboard" => [
-        "role" => "admin",
+        "role" => ["admin"],
         "page" => "admin_dashboard.php"
     ],
     "user_profile" => [
-        "role" => "user",
+        "role" => ['admin', 'user'],
         "page" => "user_profile.php"
     ],
     "home" => [
-        "role" => "guest",
+        "role" => ["everybody"],
         "page" => "home.php"
     ],
     "stat" => [
-        "role" => "guest",
+        "role" => ["everybody"],
         "page" => "stat.php"
     ],
     "register" => [
-        "role" => "guest",
+        "role" => ["guest"],
         "page" => "register.php"
     ],
     "login" => [
-        "role" => "guest",
+        "role" => ["guest"],
         "page" => "login.php"
+    ],
+    "error" => [
+        "role" => ["everybody"],
+        "page" => "error.php"
     ],
 ];
 
-// 🔐 Ne fais confiance à aucune entrée
 $pageRequest = $_GET['page'] ?? null;
-
-// 🔒 Vérifie que la page demandée est bien dans la liste blanche
-if (!$pageRequest || !isset($routes[$pageRequest])) {
-    http_response_code(400);
-    echo "<p>Requête invalide</p>";
-    exit;
+if (!isset($_SESSION['user']['role']) || !$_SESSION['user']['role'] ) {
+    $_SESSION['user']['role'] = 'guest';
 }
 
+$currentRole = $_SESSION['user']['role'];
+if (!$pageRequest || !isset($routes[$pageRequest])) {
+
+    // Utiliser correctement la clé 'page' dans $routes['error']
+    $file = ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . basename($routes['error']['page']);
+   
+    ob_start();
+    require $file;
+    http_response_code(200); 
+    $content = ob_get_clean();
+    echo $content;
+    exit;
+}
 $route = $routes[$pageRequest];
 
-// 🔒 Vérifie que l'utilisateur a le bon rôle
-if ($currentRole !== $route['role'] && $route['role'] !== 'guest') {
-    http_response_code(403);
-    echo "<p>Accès refusé</p>";
-    exit;
+if (
+    !in_array("everybody", $route['role']) &&
+    !in_array($currentRole, $route['role'])
+) {
+    showError(403, "Vous n'avez pas les droits pour accéder à cette page.");
 }
 
-// 🔒 Sécurise le chemin du fichier à inclure
-$file =  ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR .  "views" . DIRECTORY_SEPARATOR . basename($route['page']);
-
-if (!file_exists($file)) {
-    http_response_code(500);
-    echo "<p>Erreur interne : fichier manquant</p>";
-    exit;
+$file = ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . basename(path: $route['page']);
+if (!file_exists(filename: $file)) {
+    showError(code: 500, message: "Le fichier associé à cette page est manquant.");
 }
-
-// ✅ Si tout est OK, on charge proprement la page
 ob_start();
 require $file;
-http_response_code(200);
+http_response_code(response_code: 200);
 $content = ob_get_clean();
 echo $content;
 exit;
