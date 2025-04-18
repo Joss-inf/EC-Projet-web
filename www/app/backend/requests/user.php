@@ -109,6 +109,15 @@ class User
             throw new Exception("Erreur de base de données : " . $e->getMessage());
         }
     }
+    public function deleteUser($userId): bool
+    {
+        try {
+            $stmt = $this->db->prepare('DELETE FROM users WHERE id = :id');
+            return $stmt->execute(['id' => $userId]);
+        } catch (PDOException $e) {
+            throw new Exception("Erreur de base de données : " . $e->getMessage());
+        }
+    }
     // Déconnexion de l'utilisateur
     public function clearSession(): void
     {
