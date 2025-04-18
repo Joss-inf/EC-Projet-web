@@ -1,0 +1,192 @@
+.filter-container {
+    background-color: #ffffff8b;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10.5px);
+    -webkit-backdrop-filter: blur(10.5px);
+    border: 1px solid rgba(1, 148, 41, 0.06);
+    width: 100%;
+    max-width: 800px;
+    margin: 100px auto 0 auto;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.filter-container h1 {
+    font-size: 2em;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.filter-container h2 {
+    font-size: 1.5em;
+    color: #333;
+    margin-top: 30px;
+}
+
+/* Filtres côte à côte */
+.filters-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+/* Selects */
+.filter-select {
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    margin-top: 5px;
+}
+
+/* Labels */
+.filter-container label {
+    font-size: 1.1em;
+    color: #555;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Boutons */
+.filter-container .filter-btn {
+    background-color: #799ec5;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.filter-container .filter-btn:hover {
+    background-color: #485b70;
+}
+
+/* Scroll container pour la table */
+.data-filter-container {
+    overflow-y: auto;
+    height: 400px;
+    margin-top: 20px;
+}
+
+/* Table */
+.filter-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-filter thead th {
+    position: sticky;
+    top: 0;
+    background-color: #6d96c2;
+    color: white;
+    z-index: 2;
+}
+
+.filter-container th,
+.filter-container td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.filter-container th {
+    background-color: #6d96c2;
+    color: white;
+}
+
+.filter-container tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.filter-container tbody tr:hover {
+    background-color: #55555576;
+    cursor: pointer;
+}
+
+.filter-wrapper {
+    display: flex;
+    gap: 10px;
+}
+
+/* Barre de recherche */
+.search-bar {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Section des boutons de tri */
+.filter-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .filter-container {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .filters-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .filter-group {
+        min-width: 100%;
+    }
+
+    .filter-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .filter-btn {
+        width: 100%;
+    }
+
+    .data-filter-container {
+        height: auto;
+        overflow-x: auto;
+    }
+
+    .filter-container table {
+        display: block;
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    .filter-container th,
+    .filter-container td {
+        white-space: nowrap;
+    }
+
+    .search-bar input {
+        width: 100%;
+    }
+}
