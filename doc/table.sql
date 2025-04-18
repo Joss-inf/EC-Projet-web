@@ -7,7 +7,7 @@ CREATE TABLE users (
     username VARCHAR(100) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL, 
-    user_state INT,
+    user_state VARCHAR(5) NOT NULL DEFAULT 'user',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     last_login TIMESTAMP NULL
@@ -143,8 +143,8 @@ CREATE TABLE waste_production (
     id INT AUTO_INCREMENT PRIMARY KEY,
     institute_name_id INT,
     waste_id INT,
-    waste_label_id
-    year_id INT, 
+    waste_label_id INT,
+    year_id INT,
     department_id INT,
     country_id INT,
     prod_quantity DECIMAL(15, 3),
