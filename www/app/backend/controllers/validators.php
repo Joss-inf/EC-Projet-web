@@ -2,6 +2,13 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
+function validateName($name){
+    if (strlen(string: $name) < 3 || strlen(string: $name) > 50 ) {
+        return false;
+    }
+    return true;
+}
 function validateEmail($email): mixed
 {
     return filter_var(value: $email, filter: FILTER_VALIDATE_EMAIL);

@@ -1,10 +1,10 @@
 <?php
 session_start();
-require_once '../requests/csvRefCreator.php';
+require_once '../requests/csvHandler.php';
 require_once '../requests/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csvfiles'])) {
-    $req = new CsvRefCreator(Database::getConnection());
+    $req = new CsvHandler(Database::getConnection());
 
     $files = $_FILES['csvfiles'];
     for ($i = 0; $i < count($files['name']); $i++) {
@@ -39,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csvfiles'])) {
                         $waste = $row[4];
                         $quantity = $row[5];
                         $unite = $row[6];
+                        $req->SetEmission( $name_entite, $year, $environment,$waste,$quantity,$unite );
                     } elseif ($fileName === 'Prod_dechets_dangereux.csv' || $fileName === 'Prod_dechets_non_dangereux.csv') {
                         $country = $row[7];
                         if ($country){
@@ -51,20 +52,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csvfiles'])) {
                         $label_waste = $row[9];
                         $quantity = $row[10];
                         $unite = $row[11];
-                        $req->SetwasteProd($institute_name, $waste, $label_waste,  $year,  $department, $unite, $quantity)
+                        $req->SetwasteProd($institute_name, $waste, $label_waste,  $year,  $department, $unite, $quantity);
                     } elseif ($fileName === 'Trait_dechets_dangereux.csv' || $fileName === 'Trait_dechets_non_dangereux.csv') {
                         $country = $row[7];
                         if ($country){
                             continue;
                         }
                         $institute_name = $row[1];
-                        $pollutant = $row[2];
+                        $waste= $row[2];
                         $year = $row[3];
                         $department = $row[6];
-                        $libel_waste = $row[9];
+                        $label_waste = $row[9];
                         $quantity_in = $row[10];
                         $quantity_out = $row[11];
                         $unite = $row[12];
+                        $req->SetwasteTrait($institute_name, $waste, $label_waste, $year, $department, $unite, $quantity_in, $quantity_out);
                     } else {
                         echo "Fichier non reconnu : $fileName<br>";
                     }

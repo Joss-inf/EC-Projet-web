@@ -1,7 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 session_start();
 function showError($code, $message): never
 {
@@ -17,41 +14,65 @@ function showError($code, $message): never
     }
     exit;
 }
-$currentRole = $_SESSION['role'] ?? 'guest';
+
 $routes = [
     "admin_dashboard" => [
-        "role" => "guest",
+        "role" => ["admin"],
         "page" => "admin_dashboard.php"
     ],
     "user_profile" => [
-        "role" => "user",
+        "role" => ['admin', 'user'],
         "page" => "user_profile.php"
     ],
     "home" => [
-        "role" => "guest",
+        "role" => ["everybody"],
         "page" => "home.php"
     ],
     "stat" => [
-        "role" => "guest",
+        "role" => ["everybody"],
         "page" => "stat.php"
     ],
     "register" => [
-        "role" => "guest",
+        "role" => ["guest"],
         "page" => "register.php"
     ],
     "login" => [
-        "role" => "guest",
+        "role" => ["guest"],
         "page" => "login.php"
     ],
+    "error" => [
+        "role" => ["everybody"],
+        "page" => "error.php"
+    ],
 ];
+
 $pageRequest = $_GET['page'] ?? null;
+if (!isset($_SESSION['user']['role']) || !$_SESSION['user']['role'] ) {
+    $_SESSION['user']['role'] = 'guest';
+}
+
+$currentRole = $_SESSION['user']['role'];
 if (!$pageRequest || !isset($routes[$pageRequest])) {
-    showError(code: 404, message: "Page demandée introuvable.");
+
+    // Utiliser correctement la clé 'page' dans $routes['error']
+    $file = ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . basename($routes['error']['page']);
+   
+    ob_start();
+    require $file;
+    http_response_code(200); 
+    $content = ob_get_clean();
+    echo $content;
+    exit;
 }
 $route = $routes[$pageRequest];
-if ($currentRole !== $route['role'] && $route['role'] !== 'guest') {
-    showError(code: 403, message: "Vous n'avez pas les droits pour accéder à cette page.");
+
+if (
+    !in_array("everybody", $route['role']) &&
+    !in_array($currentRole, $route['role'])
+) {
+    showError(403, "Vous n'avez pas les droits pour accéder à cette page.");
 }
+
 $file = ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . basename(path: $route['page']);
 if (!file_exists(filename: $file)) {
     showError(code: 500, message: "Le fichier associé à cette page est manquant.");
