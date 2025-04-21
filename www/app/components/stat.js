@@ -4,7 +4,7 @@
 
     const yearSelect = document.getElementById("year");
     const environmentSelect = document.getElementById("environment");
-    const pollutantSelect = document.getElementById("pollutant"); // Nouveau filtre
+    const pollutantSelect = document.getElementById("pollutant"); 
     const resultsTable = document.getElementById("results");
     const filterBtn = document.getElementById("filterBtn");
     const searchInput = document.getElementById("searchInput");
